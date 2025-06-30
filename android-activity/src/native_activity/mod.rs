@@ -298,7 +298,9 @@ impl AndroidAppInner {
                             callback(PollEvent::Main(MainEvent::InputAvailable))
                         }
                         _ => {
-                            error!("Ignoring spurious ALooper event source: id = {id}, fd = {fd}, events = {events:?}, data = {source:?}");
+                            error!(
+                                "Ignoring spurious ALooper event source: id = {id}, fd = {fd}, events = {events:?}, data = {source:?}"
+                            );
                         }
                     }
                 }
@@ -527,7 +529,9 @@ impl InputIteratorInner<'_> {
                 let handled = match result {
                     Ok(handled) => handled,
                     Err(payload) => {
-                        log::error!("Calling `finish_event` after panic in input event handler, to try and avoid being killed via an ANR");
+                        log::error!(
+                            "Calling `finish_event` after panic in input event handler, to try and avoid being killed via an ANR"
+                        );
                         queue.finish_event(ndk_event, false);
                         std::panic::resume_unwind(payload);
                     }

@@ -424,11 +424,15 @@ impl AndroidAppInner {
                                 trace!("Calling android_app_post_exec_cmd({cmd_i})");
                                 ffi::android_app_post_exec_cmd(native_app.as_ptr(), cmd_i);
                             } else {
-                                panic!("ALooper_pollAll returned ID_MAIN event with NULL android_poll_source!");
+                                panic!(
+                                    "ALooper_pollAll returned ID_MAIN event with NULL android_poll_source!"
+                                );
                             }
                         }
                         _ => {
-                            error!("Ignoring spurious ALooper event source: id = {id}, fd = {fd}, events = {events:?}, data = {source:?}");
+                            error!(
+                                "Ignoring spurious ALooper event source: id = {id}, fd = {fd}, events = {events:?}, data = {source:?}"
+                            );
                         }
                     }
                 }
