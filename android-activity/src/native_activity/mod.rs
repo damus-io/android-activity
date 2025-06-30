@@ -18,7 +18,8 @@ use crate::input::{Axis, KeyCharacterMap, KeyCharacterMapBinding};
 use crate::input::{TextInputState, TextSpan};
 use crate::jni_utils::{self, CloneJavaVM};
 use crate::{
-    util, AndroidApp, ConfigurationRef, InputStatus, MainEvent, PollEvent, Rect, WindowManagerFlags,
+    AndroidApp, ConfigurationRef, ImeOptions, InputStatus, InputType, MainEvent, PollEvent, Rect,
+    WindowManagerFlags, util,
 };
 
 pub mod input;
@@ -390,6 +391,11 @@ impl AndroidAppInner {
 
     // TODO: move into a trait
     pub fn set_text_input_state(&self, _state: TextInputState) {
+        // NOP: Unsupported
+    }
+
+    // TODO: move into a trait
+    pub fn set_ime_editor_info(&self, _input_type: InputType, _options: ImeOptions) {
         // NOP: Unsupported
     }
 
