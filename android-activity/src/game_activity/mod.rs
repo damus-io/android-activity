@@ -317,7 +317,6 @@ impl AndroidAppInner {
                     trace!("ALooper_pollAll returned POLL_WAKE");
 
                     if ffi::android_app_input_available_wake_up(native_app.as_ptr()) {
-                        log::debug!("Notifying Input Available");
                         callback(PollEvent::Main(MainEvent::InputAvailable));
                     }
 
