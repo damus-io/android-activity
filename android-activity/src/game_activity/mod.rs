@@ -32,10 +32,11 @@ use crate::{
 };
 
 mod ffi;
-
 pub mod input;
+
 use crate::input::{TextInputState, TextSpan};
 use input::{InputEvent, KeyEvent, MotionEvent};
+use crate::InsetType;
 
 // The only time it's safe to update the android_app->savedState pointer is
 // while handling a SaveState event, so this API is only exposed for those
@@ -207,6 +208,15 @@ impl NativeAppGlue {
         }
     }
 
+    pub fn get_window_insets(&self, inset_type: InsetType) -> Rect {
+        unsafe {
+            let activity = (*self.as_ptr()).activity;
+            let mut rect: ndk_sys::ARect = std::mem::zeroed();
+            ffi::GameActivity_getWindowInsets(activity, inset_type.into(), &mut rect);
+            rect.into()
+        }
+    }
+
     pub fn set_ime_editor_info(&self, input_type: InputType, options: ImeOptions) {
         unsafe {
             let activity = (*self.as_ptr()).activity;
@@ -334,7 +344,6 @@ impl AndroidAppInner {
                     trace!("ALooper_pollAll returned POLL_WAKE");
 
                     if ffi::android_app_input_available_wake_up(native_app.as_ptr()) {
-                        log::debug!("Notifying Input Available");
                         callback(PollEvent::Main(MainEvent::InputAvailable));
                     }
 
@@ -404,6 +413,7 @@ impl AndroidAppInner {
                                     ffi::NativeAppGlueAppCmd_APP_CMD_STOP => MainEvent::Stop,
                                     ffi::NativeAppGlueAppCmd_APP_CMD_DESTROY => MainEvent::Destroy,
                                     ffi::NativeAppGlueAppCmd_APP_CMD_WINDOW_INSETS_CHANGED => {
+                                        log::debug!("Notifying Insets Changed");
                                         MainEvent::InsetsChanged {}
                                     }
                                     _ => unreachable!(),
@@ -544,6 +554,10 @@ impl AndroidAppInner {
 
     pub fn set_ime_editor_info(&self, input_type: InputType, options: ImeOptions) {
         self.native_app.set_ime_editor_info(input_type, options);
+    }
+
+    pub fn get_window_insets(&self, inset_type: InsetType) -> Rect {
+        self.native_app.get_window_insets(inset_type)
     }
 
     pub(crate) fn device_key_character_map(

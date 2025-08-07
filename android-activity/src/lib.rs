@@ -335,6 +335,27 @@ pub enum InputStatus {
 use activity_impl::AndroidAppInner;
 pub use activity_impl::AndroidAppWaker;
 
+// NOTE: order matters here, it matches the sdk enumeration
+#[derive(num_enum::FromPrimitive, num_enum::IntoPrimitive)]
+#[non_exhaustive]
+#[repr(u8)]
+pub enum InsetType {
+    CaptionBar,
+    DisplayCutout,
+    Ime,
+    MandatorySystemGestures,
+    NavigationBars,
+    StatusBars,
+    SystemBars,
+    SystemGestures,
+    TapableElement,
+    Waterfall,
+
+    #[doc(hidden)]
+    #[num_enum(catch_all)]
+    __Unknown(u8),
+}
+
 bitflags! {
     /// Flags for [`AndroidApp::set_ime_editor_info`]
     /// as per the [android.view.inputmethod.EditorInfo Java API](https://developer.android.com/reference/android/view/inputmethod/EditorInfo)
@@ -925,6 +946,11 @@ impl AndroidApp {
     /// Forward the given input text `state` to any active IME.
     pub fn set_text_input_state(&self, state: input::TextInputState) {
         self.inner.read().unwrap().set_text_input_state(state);
+    }
+
+    /// Get window insets
+    pub fn get_window_insets(&self, inset_type: InsetType) -> Rect {
+        self.inner.read().unwrap().get_window_insets(inset_type)
     }
 
     /// Set IME editor flags

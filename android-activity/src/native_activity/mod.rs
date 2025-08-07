@@ -399,6 +399,11 @@ impl AndroidAppInner {
         // NOP: Unsupported
     }
 
+    // TODO: move into a trait
+    pub fn get_window_insets(&self, _inset_type: InsetType) {
+        // NOP: Unsupported
+    }
+
     pub fn device_key_character_map(&self, device_id: i32) -> InternalResult<KeyCharacterMap> {
         let mut guard = self.key_maps.lock().unwrap();
 
