@@ -416,7 +416,10 @@ impl AndroidAppInner {
                                         log::debug!("Notifying Insets Changed");
                                         MainEvent::InsetsChanged {}
                                     }
-                                    _ => unreachable!(),
+                                    v => {
+                                        log::warn!("unhandled app cmd: {v}");
+                                        return;
+                                    },
                                 };
 
                                 trace!("Read ID_MAIN command {cmd_i} = {cmd:?}");
